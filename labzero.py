@@ -9,9 +9,15 @@ word_count = {}
 def populateWordDic():
     fd = os.open(infile, os.O_RDONLY, stat.S_IRWXU);
     assert fd >= 0
+    print("Opened Successfully")
     word = ""
-    char = fd.read(1).decode()
+    char = os.read(fd,1).decode()
+    #x = 0
     while len(char) >0:
+        print(char)
+        #if x%200==0:
+        #    print(x)
+        #x=x+1
         if char.isspace():
             if word in word_count:
                 word_count[word] += 1
@@ -19,18 +25,18 @@ def populateWordDic():
                 word_count[word] = 1
             word = ""
         if char.isalpha():
-            word.append(char)
-        fd.read(1).decode()
-    fd.close()
+            word = word + char
+        char = os.read(fd,1).decode()
+    os.close(fd)
 
 def countWords():
     populateWordDic()
     
-    if len(word_dic)== 0:
+    if len(word_count)== 0:
         os.write(2,"No words found\n".encode())
         return
     
-    for key in word_dic:
-        os.write(2, f"{key} : {word_dic[key]} occurences".encode())
+    for key in word_count:
+        os.write(2, f"{key} : {word_count[key]} occurences\n".encode())
 
 countWords()
